@@ -1,0 +1,50 @@
+reddit = praw.Reddit(user_agent=userAgent,
+		     client_id=cID,
+		     client_secret=cSC,
+		     username=userN,
+		     password=userP)
+
+subreddit = reddit.subreddit('Buddhism') #any subreddit you want to monitor
+
+bot_phrase = 'It looks like you are having doubts about rebirth, here are some rebirth evidences for you. https://www.reddit.com/r/Buddhism/comments/dktouv/buddhists_should_repost_rebirth_evidences_more/?utm_source=share&utm_medium=web2x&context=3 They are objectively verified, independent of Buddhism. Objectively verified as in not just subjective claims, but verified the details of the claim with real world findings, which no one knew beforehand. Independent of Buddhism as in most researchers in this field are not Buddhists, have no vested interest in Buddhism. This is a bot.' #phrase that the bot replies with
+
+keywords = {'reincarnation evidences', 'rebirth evidences', 'doubt about reincarnation', 'doubt about rebirth'} #makes a set of keywords to find in subreddits
+keyword1 = {'proof', 'prove', 'evidences', 'evidence', 'doubt', 'real', 'true', 'fake', 'false'}
+keyword2 = {'rebirth', 'reincarnation'}
+
+for submission in subreddit.new(limit=40):
+
+	n_title = submission.title.lower() #makes the post title lowercase so we can compare our keywords with it.
+
+	for i in keyword1:
+
+		 for j in keyword2:
+				
+				if i in n_title and j in n_title: #if one of our keywords matches a title in the top 10 of the subreddit
+				
+				 numFound = numFound + 1
+
+				print('Bot replying to: ') #replies and outputs to the command line
+
+				print("Title: ", submission.title)
+
+				print("Text: ", submission.selftext)
+
+				print("Score: ", submission.score)
+
+				print("---------------------------------")
+
+				print('Bot saying: ', bot_phrase)
+
+				print()
+
+				print(numFound)
+
+				submission.reply(bot_phrase)
+
+
+if numFound == 0:
+
+	print()
+
+	print("Sorry, didn't find any posts with those keywords, try again!")
