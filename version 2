@@ -1,0 +1,51 @@
+numFound = 0
+numFoundc = 0
+
+reddit = praw.Reddit(user_agent=userAgent,
+		     client_id=cID,
+		     client_secret=cSC,
+		     username=userN,
+		     password=userP)
+
+subreddit = reddit.subreddit('Buddhism') #any subreddit you want to monitor
+
+bot_phrase = 'It looks like you are having doubts about rebirth! Let me tell you that it is perfectly normal to be sceptical in this...It is my honor to share with you some amazing scientific evidences of rebirths that are linked in this thread. https://www.reddit.com/r/Buddhism/comments/dktouv/buddhists_should_repost_rebirth_evidences_more/?utm_source=share&utm_medium=web2x&context=3 Almost all of these evidences are objectively verified and most of them are done by Independent researchers (non-Buddhists). I believe you will find these resources interested! Objectively verified as in not just subjective claims, but verified the details of the claim with real world findings, which no one knew beforehand.' #phrase that the bot replies with
+
+keywords = {'reincarnation evidences', 'rebirth evidences', 'doubt about reincarnation', 'doubt about rebirth', 'rebirth is fake', 'reincarnation is fake', 'Is rebirth true', 'Is reincarnation true', 'rebirth evidence', 'reincarnation evidence', 'prove rebirth', 'prove reincarnation', 'proof of rebirth', 'proof of reincarnation', 'rebirth proof', 'reincarnation proof'} #makes a set of keywords to find in subreddits
+keyword1 = {'proof', 'prove', 'evidences', 'evidence', 'doubt', 'real', 'true', 'fake', 'false'}
+keyword2 = {'rebirth', 'reincarnation'}
+
+for submission in subreddit.new(limit=40):
+
+	n_title = submission.title.lower() #makes the post title lowercase so we can compare our keywords with it.
+
+	for i in keywords:
+
+		if i in n_title: #if one of our keywords matches a title in the top 10 of the subreddit
+
+			numFound = numFound + 1
+
+			print('Bot replying to: ') #replies and outputs to the command line
+
+			print("Title: ", submission.title)
+
+			print("Text: ", submission.selftext)
+
+			print("Score: ", submission.score)
+
+			print("---------------------------------")
+
+			print('Bot saying: ', bot_phrase)
+
+			print()
+
+			print(numFound)
+
+			submission.reply(bot_phrase)
+
+
+if numFound == 0:
+
+	print()
+
+	print("Sorry, didn't find any posts with those keywords, try again!")
